@@ -137,3 +137,18 @@ GET  /trainee/apply             # Placeholder - coming soon
 
 ### Notes
 - If image optimization fails, original is copied; flow continues
+
+## [Fix] Membership autosave payload, draft reuse, and Preview gating - 2025-08-30
+
+### Fixed
+- Autosave now serializes the form into a plain object (not an empty array), using FormData -> object conversion.
+- Draft ID is persisted across reloads via URL param and localStorage (membershipDraftId) and reused for subsequent saves.
+- Preview button now enables when a draft exists; also checks minimal required fields for better UX and updates href dynamically.
+- CSRF header is read from the meta tag; autosave logs a console error if missing (APP_DEBUG only logs retained).
+
+### Hardened
+- Server `MembershipController::saveDraft` converts array-of-pairs payloads into associative objects and consistently returns `{ ok, draft_id, saved_at }`.
+
+### Files Changed
+- `src/Views/membership/form.php`: names on inputs, serializeForm, autosave body, draftId persistence, Preview gating, debug logs.
+- `src/Controllers/MembershipController.php`: input coercion for `data`, helper `isAssoc`.

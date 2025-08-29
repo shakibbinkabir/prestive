@@ -52,8 +52,22 @@ class MembershipController extends Controller
         $this->requireCsrf();
         
         $input = $this->getJsonInput();
+        // Ensure associative array
+        if (!is_array($input)) { $input = []; }
         $draftId = $input['draft_id'] ?? null;
         $data = $input['data'] ?? [];
+        // If data is an array-of-pairs like [[k,v], ...], coerce to associative
+        if (is_array($data) && !self::isAssoc($data)) {
+            $coerced = [];
+            foreach ($data as $row) {
+                if (is_array($row) && count($row) >= 2) {
+                    $coerced[(string)$row[0]] = $row[1];
+                }
+            }
+            if (!empty($coerced)) {
+                $data = $coerced;
+            }
+        }
         // Gracefully no-op if no meaningful data provided
         if (!is_array($data) || count($data) === 0) {
             $this->json([
@@ -84,11 +98,17 @@ class MembershipController extends Controller
             $draftId = MembershipApplication::createDraft($applicationData, $this->getClientIp());
         }
         
-    $this->json([
+        $this->json([
             'ok' => true,
             'draft_id' => (int) $draftId,
             'saved_at' => date('c')
         ]);
+    }
+
+    private static function isAssoc(array $arr): bool
+    {
+        if ($arr === []) return true; // treat empty as assoc for our purposes
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     public function preview(): void
