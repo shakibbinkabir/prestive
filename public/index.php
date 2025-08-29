@@ -17,6 +17,10 @@ use App\Controllers\Admin\ApplicationController as AdminApplicationController;
 use App\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Controllers\Admin\Ad2Controller as AdminAd2Controller;
 use App\Controllers\Admin\AuditLogController as AdminAuditLogController;
+use App\Controllers\Admin\PdfController as AdminPdfController;
+use App\Controllers\Admin\ExportController as AdminExportController;
+use App\Controllers\PdfController; // optional share pdf
+use App\Core\SecurityHeaders;
 
 // Configure session
 session_name(SESSION_NAME);
@@ -32,6 +36,9 @@ session_set_cookie_params([
     'samesite' => 'Lax'
 ]);
 session_start();
+
+// Apply security headers
+SecurityHeaders::apply($isHttps);
 
 // Initialize router
 $router = new Router();
@@ -53,6 +60,10 @@ $router->post('/admin/payments', [AdminPaymentController::class, 'create']);
 $router->post('/admin/payments/{id}/delete', [AdminPaymentController::class, 'delete']);
 $router->post('/admin/ad2/confirm', [AdminAd2Controller::class, 'confirm']);
 $router->get('/admin/audit/{type}/{id}', [AdminAuditLogController::class, 'list']);
+// Phase 5: PDFs and Exports
+$router->get('/admin/applications/{type}/{id}/pdf', [AdminPdfController::class, 'application']);
+$router->get('/admin/export/memberships.csv', [AdminExportController::class, 'membershipsCsv']);
+$router->get('/admin/export/trainees.csv', [AdminExportController::class, 'traineesCsv']);
 
 // API routes
 $router->post('/api/membership/draft/save', [MembershipController::class, 'saveDraft']);
@@ -77,6 +88,8 @@ $router->post('/trainee/share', [TraineeController::class, 'share']);
 
 // Share links
 $router->get('/s/{token}', [ShareController::class, 'show']);
+// Optional read-only PDF for share link
+$router->get('/s/{token}.pdf', [PdfController::class, 'share']);
 
 // Terms page
 $router->get('/terms', [PagesController::class, 'terms']);

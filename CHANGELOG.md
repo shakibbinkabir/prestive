@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Phase 5] - PDFs, CSV exports, security headers, backups/docs (2025-08-30)
+- Add dompdf for PDF rendering.
+- Add PDF downloads for membership and trainee applications in Admin.
+- Add CSV export endpoints with filters for memberships and trainees.
+- Apply security headers (CSP, HSTS, XFO, etc.) with env toggles.
+- Add backup scripts for DB and storage, and operations/security docs.
+
 ## 2025-08-30 - Phase 4: Admin Listings, Transitions, Ad-2 — Finalization
 
 ````

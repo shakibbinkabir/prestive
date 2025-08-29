@@ -41,3 +41,15 @@ foreach ($storageDirs as $dir) {
 define('TERMS_VERSION', $_ENV['TERMS_VERSION'] ?? 'v1');
 define('TERMS_URL', $_ENV['TERMS_URL'] ?? 'https://prestive.club/terms');
 define('TERMS_TEXT', $_ENV['TERMS_TEXT'] ?? 'By submitting this application, I confirm that the information provided is accurate and I agree to the terms and privacy policy of Prestive Club.');
+
+// Security and ops toggles (Phase 5)
+define('SECURE_HEADERS', filter_var($_ENV['SECURE_HEADERS'] ?? (APP_ENV === 'production' ? 'true' : 'false'), FILTER_VALIDATE_BOOLEAN));
+define('CSP_ENABLED', filter_var($_ENV['CSP_ENABLED'] ?? (APP_ENV === 'production' ? 'true' : 'false'), FILTER_VALIDATE_BOOLEAN));
+define('CSP_IMG_ALLOW_DATA', filter_var($_ENV['CSP_IMG_ALLOW_DATA'] ?? 'true', FILTER_VALIDATE_BOOLEAN));
+define('HSTS_MAX_AGE', (int)($_ENV['HSTS_MAX_AGE'] ?? '31536000'));
+define('BACKUP_DIR', $_ENV['BACKUP_DIR'] ?? 'storage/backups');
+
+// Ensure backup directory exists
+if (!is_dir(__DIR__ . '/../' . BACKUP_DIR)) {
+    @mkdir(__DIR__ . '/../' . BACKUP_DIR, 0755, true);
+}

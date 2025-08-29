@@ -39,6 +39,20 @@
       </div>
       <?php endif; ?>
       <button class="bg-yellow-600 text-black px-3 py-1 rounded">Apply</button>
+      <?php
+        $qParams = [
+          'type' => $type,
+          'status' => $filters['status'] ?? '',
+          'q' => $filters['q'] ?? '',
+          'date_from' => $filters['date_from'] ?? '',
+          'date_to' => $filters['date_to'] ?? '',
+        ];
+        if ($type==='membership') { $qParams['membership_type'] = $filters['membership_type'] ?? ''; }
+        else { $qParams['bgf_id'] = $filters['bgf_id'] ?? ''; }
+        $qs = http_build_query(array_filter($qParams, fn($v) => $v !== '' && $v !== null));
+        $exportUrl = $type==='membership' ? ('/admin/export/memberships.csv?' . $qs) : ('/admin/export/trainees.csv?' . $qs);
+      ?>
+      <a class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" href="<?= htmlspecialchars($exportUrl) ?>" target="_blank">Export CSV</a>
     </form>
   </div>
   <div class="overflow-x-auto">

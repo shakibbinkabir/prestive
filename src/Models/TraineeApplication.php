@@ -103,6 +103,22 @@ class TraineeApplication
         return [$where, $params];
     }
 
+    // Phase 5: export iterator (chunked)
+    public static function exportWithFilters(array $filters, int $chunk = 1000): \Generator
+    {
+        [$where, $params] = self::buildWhere($filters);
+        $offset = 0;
+        $chunk = max(100, $chunk);
+        while (true) {
+            $sql = 'SELECT id, admission_id, status, created_at, submitted_at, name, email, phone, gender, dob, training_for, trainee_type, bgf_id '
+                 . 'FROM trainee_applications ' . $where . ' ORDER BY id ASC LIMIT ' . (int)$chunk . ' OFFSET ' . (int)$offset;
+            $rows = DB::fetchAll($sql, $params);
+            if (!$rows) { break; }
+            foreach ($rows as $r) { yield $r; }
+            $offset += $chunk;
+        }
+    }
+
     public static function findWithUploads(int $id): ?array
     {
         $row = self::find($id);

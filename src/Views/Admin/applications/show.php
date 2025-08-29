@@ -31,6 +31,7 @@
         <button class="bg-yellow-600 text-black px-3 py-1 rounded" onclick="openAd2()">Ad-2 Confirm</button>
       <?php endif; ?>
   <button class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" onclick="copyShareLink()">Copy Share Link</button>
+  <a class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf">Download PDF</a>
     </div>
   </div>
 
