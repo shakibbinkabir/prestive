@@ -89,3 +89,31 @@ GET  /trainee/apply             # Placeholder - coming soon
 - Complete enum seeding for form dropdowns
 - Audit logging infrastructure ready for implementation
 - Consent tracking system foundation in place
+
+## [Project audit, fixes, and local test guide] - 2025-08-30
+
+### Audit Performed
+- Reviewed core architecture (front controller, router, controllers, models, views)
+- Validated Composer config and autoloading
+- Scanned migrations and seeding scripts for schema coverage and order
+- Checked CSRF, session cookie params, rate limiter wiring, and route registration
+- Verified namespaces, strict_types, and PSR-4 alignment
+- Identified view path casing risks and missing asset reference
+
+### Fixes Applied
+- Config: Use Dotenv safeLoad to allow boot without .env during first run
+- Views: Robust view path resolution for Admin/Components casing; flash partial loading fixed
+- Layout: Removed broken logo image path to avoid 404s in dev
+- Composer: Added license field (proprietary) to pass validation without warnings
+
+### Remaining Gaps by Phase
+- Phase 2: Membership form UI, uploads API with MIME/size validation, preview/submit routes, share link creation, consent logging on submit
+- Phase 3: Trainee application UI/logic (Self vs Other; Junior vs Senior), BGF autofill service
+- Phase 4: Admin listing/detail pages, payment capture flow and status transitions, Ad-2 confirmation, audit log writes
+- Phase 5: PDF generation, exports, optimization/hardening, backups, docs
+
+### Notes for Next Phases
+- Implement upload controller with finfo-based MIME validation and size/count constraints
+- Add share link endpoints and read-only preview pages
+- Wire consent log creation on submit; add terms versioning
+- Expand admin dashboard to include filters and details; add immutable audit logging on state changes

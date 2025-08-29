@@ -15,6 +15,11 @@ class Auth
             return false;
         }
         
+        // Prevent session fixation
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
+        
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['is_admin'] = (bool) $user['is_admin'];
         

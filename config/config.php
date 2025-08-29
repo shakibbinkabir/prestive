@@ -7,7 +7,8 @@ use Dotenv\Dotenv;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+// Use safeLoad so the app can run with defaults if .env is missing during first-time setup
+$dotenv->safeLoad();
 
 // Configuration constants
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');

@@ -30,7 +30,6 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <a href="/" class="flex items-center">
-                        <img src="/assets/prestive.png" alt="Prestive Club" class="h-12 w-auto mr-3">
                         <span class="text-xl font-bold text-gold-400">Prestive Club</span>
                     </a>
                 </div>

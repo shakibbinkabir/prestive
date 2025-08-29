@@ -12,6 +12,7 @@
             "App\\": "src/"
         }
     },
+    "license": "proprietary",
     "scripts": {
         "migrate": "php scripts/migrate.php",
         "seed": "php scripts/seed.php"

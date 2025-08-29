@@ -5,11 +5,23 @@ namespace App\Core;
 
 class View
 {
+    private static function resolveViewPath(string $view): string
+    {
+        // Normalize known top-level directories to correct casing
+        $normalized = $view;
+        if (str_starts_with(strtolower($normalized), 'admin/')) {
+            $normalized = 'Admin/' . substr($normalized, strlen('admin/'));
+        } elseif (str_starts_with(strtolower($normalized), 'components/')) {
+            $normalized = 'Components/' . substr($normalized, strlen('components/'));
+        }
+
+        return __DIR__ . '/../Views/' . $normalized . '.php';
+    }
+
     public static function render(string $view, array $data = []): void
     {
         extract($data);
-        
-        $viewFile = __DIR__ . '/../Views/' . $view . '.php';
+        $viewFile = self::resolveViewPath($view);
         
         if (!file_exists($viewFile)) {
             throw new \Exception("View file not found: $view");
@@ -19,8 +31,9 @@ class View
         include $viewFile;
         $content = ob_get_clean();
         
-        // If not a partial/component, wrap in layout
-        if (!str_starts_with($view, 'components/')) {
+    // If not a partial/component, wrap in layout (handle case-insensitively for folder name)
+    $isComponent = str_starts_with(strtolower($view), 'components/');
+    if (!$isComponent) {
             include __DIR__ . '/../Views/layout.php';
         } else {
             echo $content;
@@ -30,6 +43,6 @@ class View
     public static function partial(string $view, array $data = []): void
     {
         extract($data);
-        include __DIR__ . '/../Views/' . $view . '.php';
+        include self::resolveViewPath($view);
     }
 }
