@@ -12,6 +12,8 @@ use App\Models\Enum;
 use App\Models\Upload;
 use App\Models\ShareLink;
 use App\Models\ConsentLog;
+use App\Models\AuditLog;
+use App\Core\Auth as CoreAuth;
 
 class MembershipController extends Controller
 {
@@ -222,8 +224,11 @@ class MembershipController extends Controller
             return;
         }
 
-        $token = ShareLink::createFor('membership', $id, \App\Core\Auth::id());
+    $actorId = CoreAuth::id();
+    $token = ShareLink::createFor('membership', $id, $actorId);
         $url = rtrim(APP_URL, '/') . '/s/' . $token;
+    // audit
+    AuditLog::create($actorId, $this->getClientIp(), 'share.created', 'membership', $id, [ 'url' => $url ]);
         $this->json(['ok' => true, 'url' => $url]);
     }
 }

@@ -13,6 +13,10 @@ use App\Controllers\FileController;
 use App\Controllers\ShareController;
 use App\Controllers\PagesController;
 use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\ApplicationController as AdminApplicationController;
+use App\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Controllers\Admin\Ad2Controller as AdminAd2Controller;
+use App\Controllers\Admin\AuditLogController as AdminAuditLogController;
 
 // Configure session
 session_name(SESSION_NAME);
@@ -42,6 +46,13 @@ $router->post('/admin/logout', [AuthController::class, 'logout']);
 
 // Admin routes
 $router->get('/admin/dashboard', [DashboardController::class, 'index']);
+$router->get('/admin/applications', [AdminApplicationController::class, 'index']);
+$router->get('/admin/applications/{type}/{id}', [AdminApplicationController::class, 'show']);
+$router->post('/admin/applications/{type}/{id}/transition', [AdminApplicationController::class, 'transition']);
+$router->post('/admin/payments', [AdminPaymentController::class, 'create']);
+$router->post('/admin/payments/{id}/delete', [AdminPaymentController::class, 'delete']);
+$router->post('/admin/ad2/confirm', [AdminAd2Controller::class, 'confirm']);
+$router->get('/admin/audit/{type}/{id}', [AdminAuditLogController::class, 'list']);
 
 // API routes
 $router->post('/api/membership/draft/save', [MembershipController::class, 'saveDraft']);

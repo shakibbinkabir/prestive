@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-08-30 - Phase 4: Admin Listings, Transitions, Ad-2 — Finalization
+
+````
+Completed
+- Admin Applications
+  - Filters: status, date range, search (name/email/admission), plus membership_type and bgf_id where applicable.
+  - Sorting on ID/Name/Email/Status/Created/Submitted/Admission ID.
+  - Pagination (20/page) with totals.
+  - Detail view with tabs: Overview, Uploads, Payments, Audit Log.
+- Payments
+  - Manual capture with amount/currency/notes; auto-transition submitted → payment_received.
+  - Delete action with CSRF and audit logging.
+  - Redirect vs JSON behavior honored via Accept: application/json.
+- Status Transitions
+  - submitted → payment_received → paid, with override allowed (submitted → paid) and flagged in audit.
+  - Transition endpoints follow redirect vs JSON behavior.
+- Ad-2 Confirmation
+  - Generates unique 6-char admission_id; sets status to confirmed and timestamps/notes in a transaction.
+  - Redirect vs JSON behavior honored; audit includes admission_id and notes.
+- Audit Logging
+  - payment.created/payment.deleted, status.transition (with override), ad2.confirmed
+
+Changed
+- Models: MembershipApplication/TraineeApplication transition logs now use status.transition with override flag.
+- Controllers: Transition and Ad-2 endpoints now respect Accept header for redirects vs JSON.
+- Views: Added payment delete button; added extra filters and sortable table headers.
+````
+
+## 2025-08-29 - Phase 4: Admin Operations
+
+````
+Added
+- Migration: database/migrations/0008_phase4_admin_payments_ad2.sql to add admission/Ad-2 fields and enhance payments.
+- Services: src/Services/AdmissionIdService.php with generate() and assign() for unique admission IDs and atomic confirmation.
+- Admin Controllers:
+  - src/Controllers/Admin/ApplicationController.php (listing, detail, transitions)
+  - src/Controllers/Admin/PaymentController.php (manual payment create/delete)
+  - src/Controllers/Admin/Ad2Controller.php (Ad-2 confirm)
+  - src/Controllers/Admin/AuditLogController.php (list)
+- Views:
+  - src/Views/Admin/applications/index.php (filters, table, pagination)
+  - src/Views/Admin/applications/show.php (tabs: overview, uploads, payments, audit; action buttons)
+  - src/Views/Admin/partials/payment_form.php (payment form)
+  - src/Views/Admin/audit/index.php (audit list; embeddable)
+
+Changed
+- Dashboard stats expanded to include payment_received/paid/confirmed for membership and trainee.
+- Models updated:
+  - MembershipApplication & TraineeApplication: listing with filters, detail with uploads and payments, transitions, confirmAdmission.
+  - Payment: createFull() and listByOwner().
+  - AuditLog: simplified create() signature and listForTarget().
+- public/index.php: registered new admin routes for Phase 4 features.
+
+Security & Rules
+- All admin POST endpoints enforce CSRF and require admin.
+- All writes use parameterized queries; Ad-2 confirmation wrapped in a DB transaction with row locking.
+````
+
 ## [Phase 1] - 2025-08-29
 
 ### Added

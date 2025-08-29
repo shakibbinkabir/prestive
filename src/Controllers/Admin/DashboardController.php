@@ -17,9 +17,15 @@ class DashboardController extends Controller
             'membership_total' => MembershipApplication::countByStatus(),
             'membership_drafts' => MembershipApplication::countByStatus('draft'),
             'membership_submitted' => MembershipApplication::countByStatus('submitted'),
+            'membership_payment_received' => MembershipApplication::countByStatus('payment_received'),
+            'membership_paid' => MembershipApplication::countByStatus('paid'),
+            'membership_confirmed' => MembershipApplication::countByStatus('confirmed'),
             'trainee_total' => TraineeApplication::countByStatus(),
             'trainee_drafts' => TraineeApplication::countByStatus('draft'),
-            'trainee_submitted' => TraineeApplication::countByStatus('submitted')
+            'trainee_submitted' => TraineeApplication::countByStatus('submitted'),
+            'trainee_payment_received' => TraineeApplication::countByStatus('payment_received'),
+            'trainee_paid' => TraineeApplication::countByStatus('paid'),
+            'trainee_confirmed' => TraineeApplication::countByStatus('confirmed'),
         ];
         
         $this->render('admin/dashboard', compact('stats'));

@@ -65,20 +65,6 @@ use App\Core\CSRF;
             <p class="text-center text-gray-400">
                 &copy; 2025 Prestive Club. All rights reserved.
             </p>
-            <?php if (APP_DEBUG): ?>
-                <div class="mt-4 p-4 bg-yellow-900 bg-opacity-50 rounded-lg">
-                    <h3 class="text-yellow-400 font-semibold">Developer Mode</h3>
-                    <p class="text-sm text-yellow-300 mt-1">
-                        Phase 1 Implementation - Basic MVC scaffold with admin auth, CSRF protection, and draft save APIs.
-                    </p>
-                    <ul class="text-sm text-yellow-300 mt-2 space-y-1">
-                        <li>• Admin login: Use credentials from .env (default: admin@example.com / ChangeMe123!)</li>
-                        <li>• Draft APIs: POST /api/membership/draft/save and /api/trainee/draft/save</li>
-                        <li>• CSRF protected: Include X-CSRF-Token header for API calls</li>
-                        <li>• Rate limited: 60 requests per minute per IP</li>
-                    </ul>
-                </div>
-            <?php endif; ?>
         </div>
     </footer>
 

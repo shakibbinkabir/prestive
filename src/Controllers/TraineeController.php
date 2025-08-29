@@ -13,6 +13,8 @@ use App\Models\Enum;
 use App\Models\Upload;
 use App\Models\ShareLink;
 use App\Models\ConsentLog;
+use App\Models\AuditLog;
+use App\Core\Auth as CoreAuth;
 
 class TraineeController extends Controller
 {
@@ -191,9 +193,11 @@ class TraineeController extends Controller
         if ($id <= 0) { $this->json(['error' => 'Invalid id'], 400); return; }
         $app = TraineeApplication::find($id);
         if (!$app) { $this->json(['error' => 'Not found'], 404); return; }
-        $token = ShareLink::createFor('trainee', $id, \App\Core\Auth::id());
+    $actorId = CoreAuth::id();
+    $token = ShareLink::createFor('trainee', $id, $actorId);
         $url = rtrim(APP_URL, '/') . '/s/' . $token;
-        $this->json(['ok' => true, 'url' => $url]);
+    AuditLog::create($actorId, $this->getClientIp(), 'share.created', 'trainee', $id, [ 'url' => $url ]);
+    $this->json(['ok' => true, 'url' => $url]);
     }
 
     // Public BGF lookup for self path
