@@ -38,13 +38,7 @@ class Controller
 
     protected function validateCsrf(): bool
     {
-        $token = null;
-        
-        if ($this->isJsonRequest()) {
-            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
-        } else {
-            $token = $_POST['_token'] ?? null;
-        }
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($_POST['_token'] ?? null);
         
         return CSRF::validate($token);
     }

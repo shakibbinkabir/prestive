@@ -24,4 +24,9 @@ class ConsentLog
             'user_agent' => $userAgent
         ]);
     }
+
+    public static function createConsent(string $type, int $id, string $version, string $text, string $ip, string $ua): void
+    {
+        self::log($type, $id, $version, $text, $ip, $ua);
+    }
 }

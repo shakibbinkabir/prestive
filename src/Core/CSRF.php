@@ -10,7 +10,6 @@ class CSRF
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        
         return $_SESSION['csrf_token'];
     }
 
@@ -19,19 +18,20 @@ class CSRF
         if (!$token || !isset($_SESSION['csrf_token'])) {
             return false;
         }
-        
         return hash_equals($_SESSION['csrf_token'], $token);
     }
 
     public static function field(): string
     {
         $token = self::generateToken();
-        return "<input type='hidden' name='_token' value='$token'>";
+        // Use double quotes to align with common scrapers/tests
+        return '<input type="hidden" name="_token" value="' . $token . '">';
     }
 
     public static function meta(): string
     {
         $token = self::generateToken();
-        return "<meta name='csrf-token' content='$token'>";
+        // Use double quotes so test regex finds it
+        return '<meta name="csrf-token" content="' . $token . '">';
     }
 }

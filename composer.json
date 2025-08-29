@@ -5,7 +5,8 @@
     "require": {
         "php": "^8.0",
         "vlucas/phpdotenv": "^5.0",
-        "ramsey/uuid": "^4.0"
+    "ramsey/uuid": "^4.0",
+    "intervention/image": "^2.7"
     },
     "autoload": {
         "psr-4": {

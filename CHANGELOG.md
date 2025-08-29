@@ -117,3 +117,23 @@ GET  /trainee/apply             # Placeholder - coming soon
 - Add share link endpoints and read-only preview pages
 - Wire consent log creation on submit; add terms versioning
 - Expand admin dashboard to include filters and details; add immutable audit logging on state changes
+
+## [Phase 2] - Membership Form, Uploads, Preview, Submit, Share - 2025-08-30
+
+### Added
+- Dependencies: intervention/image ^2.x for image optimization to WebP
+- Config: TERMS_VERSION, TERMS_URL, TERMS_TEXT
+- DB: migration 0006_expand_membership_fields.sql adding all membership fields
+- Services: ImageService (optimizeToWebp), UploadService (category constraints, finfo MIME, storage, counts)
+- Models: MembershipApplication (find/createDraft/updateDraft/updateFieldsOnSubmit), Upload (findByOwner, countByOwnerCategory), ShareLink (createFor, findByToken), ConsentLog (createConsent helper)
+- Controllers: Membership (applyForm, preview, submit with validation+consent, share), File (upload API with rate limit and optimized serving), Share (public read-only preview), Pages (terms)
+- Views: membership/form.php (Alpine autosave + uploads widgets), membership/preview.php (read-only with actions), terms.php; layout links
+- Routes: all endpoints for Phase 2 registered in public/index.php
+- Web Server: ensured Apache rewrite via public/.htaccess present
+
+### Validation
+- Submit requires full_name, email (valid), gender (from enum), dob (YYYY-MM-DD), terms_confirmed
+- Uploads enforce MIME/size/count and generate optimized WebP for images
+
+### Notes
+- If image optimization fails, original is copied; flow continues

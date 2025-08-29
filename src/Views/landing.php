@@ -24,7 +24,7 @@
                     <p class="text-gray-300 mb-8">
                         Become a member of our prestigious community and unlock exclusive benefits, networking opportunities, and professional development resources.
                     </p>
-                    <a href="/membership/apply" class="inline-block bg-gold-400 text-black px-8 py-3 rounded-lg font-semibold hover:bg-gold-500 transition-colors">
+                <a href="/membership/apply" class="inline-block bg-gold-400 text-black px-8 py-3 rounded-lg font-semibold hover:bg-gold-500 transition-colors">
                         Apply for Membership
                     </a>
                 </div>

@@ -9,15 +9,21 @@ use App\Controllers\LandingController;
 use App\Controllers\AuthController;
 use App\Controllers\MembershipController;
 use App\Controllers\TraineeController;
+use App\Controllers\FileController;
+use App\Controllers\ShareController;
+use App\Controllers\PagesController;
 use App\Controllers\Admin\DashboardController;
 
 // Configure session
 session_name(SESSION_NAME);
+// Mark cookie secure only when served over HTTPS (or forwarded as https)
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
     'domain' => '',
-    'secure' => !APP_DEBUG, // true in production
+    'secure' => $isHttps,
     'httponly' => true,
     'samesite' => 'Lax'
 ]);
@@ -40,9 +46,24 @@ $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 // API routes
 $router->post('/api/membership/draft/save', [MembershipController::class, 'saveDraft']);
 $router->post('/api/trainee/draft/save', [TraineeController::class, 'saveDraft']);
+$router->post('/api/upload', [FileController::class, 'upload']);
+
+$router->get('/file/optimized/{id}', [FileController::class, 'optimized']);
+$router->get('/file/raw/{id}', [FileController::class, 'raw']);
+
+// Membership
+$router->get('/membership/apply', [MembershipController::class, 'applyForm']);
+$router->get('/membership/preview', [MembershipController::class, 'preview']);
+$router->post('/membership/submit', [MembershipController::class, 'submit']);
+$router->post('/membership/share', [MembershipController::class, 'share']);
+
+// Share links
+$router->get('/s/{token}', [ShareController::class, 'show']);
+
+// Terms page
+$router->get('/terms', [PagesController::class, 'terms']);
 
 // Placeholder routes
-$router->get('/membership/apply', [LandingController::class, 'comingSoon']);
 $router->get('/trainee/apply', [LandingController::class, 'comingSoon']);
 
 try {

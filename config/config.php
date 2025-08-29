@@ -36,3 +36,8 @@ foreach ($storageDirs as $dir) {
         mkdir(__DIR__ . '/../' . $dir, 0755, true);
     }
 }
+
+// Terms & Conditions configuration
+define('TERMS_VERSION', $_ENV['TERMS_VERSION'] ?? 'v1');
+define('TERMS_URL', $_ENV['TERMS_URL'] ?? 'https://prestive.club/terms');
+define('TERMS_TEXT', $_ENV['TERMS_TEXT'] ?? 'By submitting this application, I confirm that the information provided is accurate and I agree to the terms and privacy policy of Prestive Club.');

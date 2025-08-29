@@ -9,7 +9,8 @@ class MembershipApplication
 {
     public static function find(int $id): ?array
     {
-        return DB::fetchOne('SELECT * FROM membership_applications WHERE id = ?', [$id]);
+        $row = DB::fetchOne('SELECT * FROM membership_applications WHERE id = ?', [$id]);
+        return $row ?: null;
     }
 
     public static function create(array $data): int
@@ -22,6 +23,25 @@ class MembershipApplication
     {
         $data['updated_at'] = date('Y-m-d H:i:s');
     DB::update('membership_applications', $data, 'id = :id', ['id' => $id]);
+    }
+
+    public static function createDraft(array $data, string $ip): int
+    {
+        $data = array_merge($data, [
+            'status' => 'draft',
+            'created_ip' => $ip
+        ]);
+        return self::create($data);
+    }
+
+    public static function updateDraft(int $id, array $data): void
+    {
+        self::update($id, $data);
+    }
+
+    public static function updateFieldsOnSubmit(int $id, array $fields): void
+    {
+        self::update($id, $fields);
     }
 
     public static function countByStatus(string $status = null): int

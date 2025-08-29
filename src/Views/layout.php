@@ -1,3 +1,6 @@
+<?php
+use App\Core\CSRF;
+?>
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -35,6 +38,8 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Home</a>
+                    <a href="/membership/apply" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Membership</a>
+                    <a href="/terms" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Terms</a>
                     <?php if (\App\Core\Auth::checkAdmin()): ?>
                         <a href="/admin/dashboard" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Dashboard</a>
                         <form action="/admin/logout" method="POST" class="inline">

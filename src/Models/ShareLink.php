@@ -22,4 +22,16 @@ class ShareLink
         $data['created_at'] = date('Y-m-d H:i:s');
         return DB::insert('share_links', $data);
     }
+
+    public static function createFor(string $type, int $id, ?int $userId): string
+    {
+        $token = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        self::create([
+            'token' => $token,
+            'target_type' => $type,
+            'target_id' => $id,
+            'created_by_user_id' => $userId
+        ]);
+        return $token;
+    }
 }
