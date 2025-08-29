@@ -10,10 +10,11 @@ use Ramsey\Uuid\Uuid;
 class UploadService
 {
     public const OWNER_MEMBERSHIP = 'membership';
+    public const OWNER_TRAINEE = 'trainee';
 
     private static function categories(): array
     {
-        return [
+    return [
             'passport_photos' => [
                 'ext' => ['jpg','jpeg','png'],
                 'max' => 6,
@@ -63,6 +64,31 @@ class UploadService
                 'is_image' => false
             ],
             'visa' => [
+                'ext' => ['pdf','jpg','jpeg','png'],
+                'max' => 1,
+                'maxBytes' => 10 * 1024 * 1024,
+                'is_image' => false
+            ],
+            // Trainee categories
+            'junior_passport_photo' => [
+                'ext' => ['jpg','jpeg','png'],
+                'max' => 1,
+                'maxBytes' => 5 * 1024 * 1024,
+                'is_image' => true
+            ],
+            'junior_birth_cert' => [
+                'ext' => ['pdf','jpg','jpeg','png'],
+                'max' => 1,
+                'maxBytes' => 10 * 1024 * 1024,
+                'is_image' => false
+            ],
+            'senior_passport_photo' => [
+                'ext' => ['jpg','jpeg','png'],
+                'max' => 1,
+                'maxBytes' => 5 * 1024 * 1024,
+                'is_image' => true
+            ],
+            'senior_nid' => [
                 'ext' => ['pdf','jpg','jpeg','png'],
                 'max' => 1,
                 'maxBytes' => 10 * 1024 * 1024,

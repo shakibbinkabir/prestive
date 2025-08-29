@@ -7,6 +7,7 @@ use App\Core\Controller;
 use App\Core\RateLimiter;
 use App\Core\Response;
 use App\Models\MembershipApplication;
+use App\Models\TraineeApplication;
 use App\Models\Upload;
 use App\Services\UploadService;
 
@@ -28,12 +29,16 @@ class FileController extends Controller
         $ownerId = isset($_POST['owner_id']) ? (int)$_POST['owner_id'] : 0;
         $category = $_POST['category'] ?? '';
 
-        if ($ownerType !== UploadService::OWNER_MEMBERSHIP || $ownerId <= 0) {
+        if (!in_array($ownerType, [UploadService::OWNER_MEMBERSHIP, UploadService::OWNER_TRAINEE], true) || $ownerId <= 0) {
             $this->json(['error' => 'Invalid owner'], 400);
             return;
         }
 
-        $app = MembershipApplication::find($ownerId);
+        if ($ownerType === UploadService::OWNER_MEMBERSHIP) {
+            $app = MembershipApplication::find($ownerId);
+        } else {
+            $app = TraineeApplication::find($ownerId);
+        }
         if (!$app || !in_array($app['status'], ['draft','submitted'], true)) {
             $this->json(['error' => 'Owner not found or invalid status'], 404);
             return;

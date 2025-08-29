@@ -39,6 +39,7 @@ use App\Core\CSRF;
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Home</a>
                     <a href="/membership/apply" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Membership</a>
+                    <a href="/trainee/apply" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Trainee</a>
                     <a href="/terms" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Terms</a>
                     <?php if (\App\Core\Auth::checkAdmin()): ?>
                         <a href="/admin/dashboard" class="text-gray-300 hover:text-white px-3 py-2 rounded-md">Dashboard</a>

@@ -152,3 +152,53 @@ GET  /trainee/apply             # Placeholder - coming soon
 ### Files Changed
 - `src/Views/membership/form.php`: names on inputs, serializeForm, autosave body, draftId persistence, Preview gating, debug logs.
 - `src/Controllers/MembershipController.php`: input coercion for `data`, helper `isAssoc`.
+
+## [Phase 3] - Trainee Self/Other, Junior/Senior, BGF autofill - 2025-08-30
+
+### Added
+- DB: `0007_expand_trainee_fields.sql` adds all trainee fields (common + senior-only + admission_id) and indexes on name/email.
+- Models:
+  - `TraineeApplication`: draft helpers and `updateFieldsOnSubmit`.
+  - `MembershipApplication::findConfirmedByBGF($bgfId)` for autofill source.
+- Services:
+  - `UploadService`: support `owner_type=trainee` and trainee categories (`junior_passport_photo`, `junior_birth_cert`, `senior_passport_photo`, `senior_nid`).
+- Controllers:
+  - `TraineeController`: `applyForm`, `saveDraft` (assoc JSON, rate-limited), `preview`, `submit` (validation + consent), `share` (admin), `lookupByBGF` (public, 60/min/IP).
+  - `FileController`: accept uploads for `owner_type=trainee`.
+  - `ShareController`: render trainee shared previews.
+- Views:
+  - `trainee/form.php`: single dynamic Alpine view for Self/Other and Junior/Senior with BGF lookup and autosave.
+  - `trainee/preview.php`: read-only display with actions (submit, share); hides actions in share mode.
+
+### Routes
+```
+GET  /trainee/apply
+GET  /trainee/preview
+POST /trainee/submit
+POST /trainee/share               # admin-only
+GET  /api/member/by-bgf/{bgf}     # public lookup, rate-limited
+```
+
+### Validation & Security
+- Server-side rules for required fields, Senior-only constraints, and `training_for` logic (Self forces Senior and requires `bgf_id`).
+- CSRF enforced on POSTs; rate limiting on draft save and BGF lookup.
+- Consent logged on submit using TERMS_VERSION/TEXT.
+
+### Uploads
+- Enforced MIME, size, and count; optimized WebP generated for images; single-file rule for trainee categories.
+
+### Notes
+- BGF autofill prepopulates fields but remains editable.
+- If image optimization fails, originals are kept; flow continues.
+
+## [Fix] Trainee BGF autofill persists to draft and appears in preview - 2025-08-30
+
+### Fixed
+- `src/Views/trainee/form.php`:
+  - `autosave(forcePayload = null)` now accepts explicit payloads and merges Alpine state into the save body, ensuring programmatic changes are persisted even if inputs don’t fire events.
+  - After successful BGF lookup, the component immediately calls `autosave(this.form)` so a `draft_id` is created/updated and `previewHref` updates right away.
+  - Uploads now use the component `csrfToken` header consistently.
+  - Added debug logs (APP_DEBUG) for lookup and autosave payload/responses.
+
+### Outcome
+- Fetching BGF data and clicking Preview shows the autofilled values without requiring manual typing.

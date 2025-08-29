@@ -54,4 +54,27 @@ class MembershipApplication
         
         return (int) $result['count'];
     }
+
+    // Phase 3: BGF lookup for trainee autofill
+    public static function findConfirmedByBGF(string $bgfId): ?array
+    {
+        $row = DB::fetchOne(
+            'SELECT * FROM membership_applications WHERE status = "confirmed" AND confirmed_bgf_id = ? ORDER BY confirmed_at DESC, id DESC LIMIT 1',
+            [$bgfId]
+        );
+        if (!$row) return null;
+        // Map minimal fields for autofill
+        return [
+            'full_name' => $row['full_name'] ?? null,
+            'dob' => $row['dob'] ?? null,
+            'gender' => $row['gender'] ?? null,
+            'religion' => $row['religion'] ?? null,
+            'blood_group' => $row['blood_group'] ?? null,
+            'email' => $row['email'] ?? null,
+            'mobile' => $row['mobile'] ?? null,
+            'address_present' => $row['address_present'] ?? null,
+            'club_name' => $row['organization'] ?? null,
+            'membership_no' => $row['confirmed_bgf_id'] ?? null,
+        ];
+    }
 }

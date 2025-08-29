@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div class="mt-4 text-sm text-gray-400">
-                        Phase 1 - Basic functionality active
+                        Phase 3
                     </div>
                 </div>
             </div>

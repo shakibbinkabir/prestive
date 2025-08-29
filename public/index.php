@@ -46,6 +46,7 @@ $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 // API routes
 $router->post('/api/membership/draft/save', [MembershipController::class, 'saveDraft']);
 $router->post('/api/trainee/draft/save', [TraineeController::class, 'saveDraft']);
+$router->get('/api/member/by-bgf/{bgf}', [TraineeController::class, 'lookupByBGF']);
 $router->post('/api/upload', [FileController::class, 'upload']);
 
 $router->get('/file/optimized/{id}', [FileController::class, 'optimized']);
@@ -57,6 +58,12 @@ $router->get('/membership/preview', [MembershipController::class, 'preview']);
 $router->post('/membership/submit', [MembershipController::class, 'submit']);
 $router->post('/membership/share', [MembershipController::class, 'share']);
 
+// Trainee
+$router->get('/trainee/apply', [TraineeController::class, 'applyForm']);
+$router->get('/trainee/preview', [TraineeController::class, 'preview']);
+$router->post('/trainee/submit', [TraineeController::class, 'submit']);
+$router->post('/trainee/share', [TraineeController::class, 'share']);
+
 // Share links
 $router->get('/s/{token}', [ShareController::class, 'show']);
 
@@ -64,7 +71,6 @@ $router->get('/s/{token}', [ShareController::class, 'show']);
 $router->get('/terms', [PagesController::class, 'terms']);
 
 // Placeholder routes
-$router->get('/trainee/apply', [LandingController::class, 'comingSoon']);
 
 try {
     $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

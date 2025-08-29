@@ -24,6 +24,26 @@ class TraineeApplication
     DB::update('trainee_applications', $data, 'id = :id', ['id' => $id]);
     }
 
+    // Phase 3 helpers
+    public static function createDraft(array $data, string $ip): int
+    {
+        $data = array_merge($data, [
+            'status' => 'draft',
+            'created_ip' => $ip,
+        ]);
+        return self::create($data);
+    }
+
+    public static function updateDraft(int $id, array $data): void
+    {
+        self::update($id, $data);
+    }
+
+    public static function updateFieldsOnSubmit(int $id, array $fields): void
+    {
+        self::update($id, $fields);
+    }
+
     public static function countByStatus(string $status = null): int
     {
         if ($status) {
