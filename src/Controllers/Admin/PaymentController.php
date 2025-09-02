@@ -14,6 +14,48 @@ use App\Core\Auth;
 
 class PaymentController extends Controller
 {
+    public function index(): void
+    {
+        $this->requireAdmin();
+        $ownerType = ($_GET['owner_type'] ?? 'all');
+        $q = trim($_GET['q'] ?? '');
+        $dateFrom = $_GET['date_from'] ?? '';
+        $dateTo = $_GET['date_to'] ?? '';
+        $mode = $_GET['mode'] ?? '';
+        $currency = $_GET['currency'] ?? '';
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 20;
+        $offset = ($page - 1) * $perPage;
+
+        $filters = [];
+        if (in_array($ownerType, ['membership','trainee'], true)) { $filters['owner_type'] = $ownerType; }
+        if ($q !== '') { $filters['q'] = $q; }
+        if ($dateFrom !== '') { $filters['date_from'] = $dateFrom; }
+        if ($dateTo !== '') { $filters['date_to'] = $dateTo; }
+        if ($mode !== '') { $filters['mode'] = $mode; }
+        if ($currency !== '') { $filters['currency'] = strtoupper($currency); }
+
+        $total = \App\Models\Payment::countWithFilters($filters);
+        $rows = \App\Models\Payment::listWithFilters($filters, $perPage, $offset);
+        $pages = (int)ceil($total / $perPage);
+
+        $this->render('admin/payments/index', [
+            'title' => 'Payment Records',
+            'rows' => $rows,
+            'page' => $page,
+            'pages' => $pages,
+            'total' => $total,
+            'filters' => [
+                'owner_type' => $ownerType,
+                'q' => $q,
+                'date_from' => $dateFrom,
+                'date_to' => $dateTo,
+                'mode' => $mode,
+                'currency' => $currency,
+            ],
+        ]);
+    }
+
     public function create(): void
     {
         $this->requireAdmin();
