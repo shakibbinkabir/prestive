@@ -107,9 +107,6 @@
                         <span class="text-white">Settings</span>
                     </a>
                 </div>
-                <p class="text-sm text-gray-400 mt-4">
-                    <em>Note: Additional features will be available in upcoming phases.</em>
-                </p>
             </div>
         </div>
     </div>
