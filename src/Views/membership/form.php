@@ -197,8 +197,8 @@ function membershipForm() {
             { key: 'tin_cert', label: 'TIN Certificate', accept: '.pdf,image/*' },
             { key: 'ack_receipts', label: 'Acknowledgement Receipts', accept: '.pdf,image/*' },
             { key: 'trade_license', label: 'Trade License', accept: '.pdf,image/*' },
-            { key: 'work_permit', label: 'Work Permit', accept: '.pdf,image/*' },
-            { key: 'visa', label: 'Visa', accept: '.pdf,image/*' },
+            { key: 'work_permit', label: 'Work Permit (For Foreigners Only)', accept: '.pdf,image/*' },
+            { key: 'visa', label: 'Visa (For Foreigners Only)', accept: '.pdf,image/*' },
         ],
         init() {
             // Normalize uploaded entries coming from server DB rows
