@@ -12,3 +12,5 @@
 
 # Node (if any)
 /node_modules/
+
+/PDF/
