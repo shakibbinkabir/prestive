@@ -18,16 +18,16 @@ define('APP_URL', $_ENV['APP_URL'] ?? 'https://join.prestive.club');
 // Database configuration
 define('DB_HOST', $_ENV['DB_HOST'] ?? '127.0.0.1');
 define('DB_PORT', $_ENV['DB_PORT'] ?? '3306');
-define('DB_NAME', $_ENV['DB_NAME'] ?? 'prestive');
-define('DB_USER', $_ENV['DB_USER'] ?? 'root');
-define('DB_PASS', $_ENV['DB_PASS'] ?? '');
+define('DB_NAME', $_ENV['DB_NAME'] ?? 'u981679028_prestivejoin');
+define('DB_USER', $_ENV['DB_USER'] ?? 'u981679028_prestivejoin');
+define('DB_PASS', $_ENV['DB_PASS'] ?? 'Prestive@2025');
 
 // Session configuration
 define('SESSION_NAME', $_ENV['SESSION_NAME'] ?? 'prestive_session');
 
 // Admin configuration
-define('ADMIN_EMAIL', $_ENV['ADMIN_EMAIL'] ?? 'admin@example.com');
-define('ADMIN_PASSWORD', $_ENV['ADMIN_PASSWORD'] ?? 'ChangeMe123!');
+define('ADMIN_EMAIL', $_ENV['ADMIN_EMAIL'] ?? 'admin@prestive.club');
+define('ADMIN_PASSWORD', $_ENV['ADMIN_PASSWORD'] ?? 'admin123');
 
 // Ensure storage directories exist
 $storageDirs = ['storage/raw', 'storage/optimized', 'storage/logs'];
