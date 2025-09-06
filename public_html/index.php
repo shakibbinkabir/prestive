@@ -58,6 +58,8 @@ $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 $router->get('/admin/applications', [AdminApplicationController::class, 'index']);
 $router->get('/admin/applications/{type}/{id}', [AdminApplicationController::class, 'show']);
 $router->post('/admin/applications/{type}/{id}/transition', [AdminApplicationController::class, 'transition']);
+// Admin edit/update
+$router->post('/admin/applications/{type}/{id}/update', [AdminApplicationController::class, 'update']);
 $router->get('/admin/payments', [AdminPaymentController::class, 'index']);
 $router->post('/admin/payments', [AdminPaymentController::class, 'create']);
 $router->post('/admin/payments/{id}/delete', [AdminPaymentController::class, 'delete']);

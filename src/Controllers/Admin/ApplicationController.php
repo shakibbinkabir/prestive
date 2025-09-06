@@ -129,4 +129,46 @@ class ApplicationController extends Controller
             $this->json(['error' => $e->getMessage()], 400);
         }
     }
+
+    public function update(string $type, int $id): void
+    {
+        $this->requireAdmin();
+        $this->requireCsrf();
+        $type = $type === 'trainee' ? 'trainee' : 'membership';
+
+        // Accept application/x-www-form-urlencoded
+        $input = $_POST;
+        // Field whitelists per type
+        if ($type === 'membership') {
+            $allowed = ['full_name','email','gender','dob','membership_type','nationality','father_name','mother_name','religion','marital_status','nid_no','passport_no','organization','designation','profession','education_qualifications','blood_group','spouse_name','num_children','children_names','address_office','address_permanent','address_present','mobile','emergency_name','emergency_relationship','emergency_phone','emergency_address','hobbies_interests','previous_club_memberships','proposer_name','proposer_membership_no','seconder_name','seconder_membership_no','confirmed_bgf_id','confirmed_argc_id','status'];
+            $current = MembershipApplication::find($id);
+        } else {
+            $allowed = ['training_for','trainee_type','bgf_id','name','dob','phone','email','last_or_current_education','institution','club_name','membership_no','father_name','father_profession','mother_name','mother_profession','address_present','gender','religion','blood_group','hobby','specialty','marital_status','occupation','status'];
+            $current = TraineeApplication::find($id);
+        }
+        if (!$current) { $this->json(['error' => 'Not found'], 404); return; }
+
+        // Build update payload with only allowed keys
+        $update = [];
+        foreach ($allowed as $k) {
+            if (array_key_exists($k, $input)) { $update[$k] = $input[$k]; }
+        }
+        if (empty($update)) { $this->json(['error' => 'No fields to update'], 400); return; }
+
+        // Persist and audit
+        if ($type === 'membership') { MembershipApplication::update($id, $update); }
+        else { TraineeApplication::update($id, $update); }
+
+        // Diff minimal log
+        $changes = [];
+        foreach ($update as $k => $v) {
+            $old = $current[$k] ?? null;
+            if ((string)$old !== (string)$v) { $changes[$k] = ['from' => $old, 'to' => $v]; }
+        }
+        if (!empty($changes)) {
+            AuditLog::create(\App\Core\Auth::id(), $this->getClientIp(), 'admin.update', $type, $id, $changes);
+        }
+
+        $this->json(['ok' => true]);
+    }
 }

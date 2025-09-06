@@ -40,6 +40,7 @@
     <button class="px-3 py-1 rounded" :class="tab==='uploads'?'bg-gray-700':''" @click="tab='uploads'">Uploads</button>
     <button class="px-3 py-1 rounded" :class="tab==='payments'?'bg-gray-700':''" @click="tab='payments'">Payments</button>
     <button class="px-3 py-1 rounded" :class="tab==='audit'?'bg-gray-700':''" @click="tab='audit'">Audit Log</button>
+    <button class="px-3 py-1 rounded" :class="tab==='edit'?'bg-gray-700':''" @click="tab='edit'">Edit</button>
   </div>
 
   <div x-show="tab==='overview'">
@@ -93,6 +94,30 @@
 
   <div x-show="tab==='audit'">
     <?php \App\Core\View::partial('admin/audit/index', ['logs' => $logs, 'embedded' => true]); ?>
+  </div>
+
+  <div x-show="tab==='edit'">
+    <form id="adminEditForm" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
+      <input type="hidden" name="_token" :value="csrf" />
+      <?php if ($type==='membership'): ?>
+        <?php foreach (['full_name','email','gender','dob','membership_type','nationality','religion','marital_status','blood_group','nid_no','passport_no','mobile','organization','designation','profession','education_qualifications','father_name','mother_name','spouse_name','num_children','children_names','address_present','address_permanent','address_office','emergency_name','emergency_relationship','emergency_phone','emergency_address','hobbies_interests','previous_club_memberships','proposer_name','proposer_membership_no','seconder_name','seconder_membership_no','confirmed_bgf_id','confirmed_argc_id','status'] as $f): ?>
+          <label class="block">
+            <span class="text-xs text-gray-400"><?= htmlspecialchars($f) ?></span>
+            <input class="w-full bg-gray-800 border border-gray-700 rounded p-2" name="<?= htmlspecialchars($f) ?>" value="<?= htmlspecialchars((string)($app[$f] ?? '')) ?>" />
+          </label>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <?php foreach (['training_for','trainee_type','bgf_id','name','dob','phone','email','last_or_current_education','institution','club_name','membership_no','father_name','father_profession','mother_name','mother_profession','address_present','gender','religion','blood_group','hobby','specialty','marital_status','occupation','status'] as $f): ?>
+          <label class="block">
+            <span class="text-xs text-gray-400"><?= htmlspecialchars($f) ?></span>
+            <input class="w-full bg-gray-800 border border-gray-700 rounded p-2" name="<?= htmlspecialchars($f) ?>" value="<?= htmlspecialchars((string)($app[$f] ?? '')) ?>" />
+          </label>
+        <?php endforeach; ?>
+      <?php endif; ?>
+      <div class="md:col-span-2 mt-2">
+        <button type="button" class="px-4 py-2 bg-yellow-600 text-black rounded" onclick="submitAdminEdit()">Save Changes</button>
+      </div>
+    </form>
   </div>
 
   <div id="ad2Modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center">
@@ -151,6 +176,14 @@
       } else {
         alert(j.error||'Failed to create share link');
       }
+    }
+
+    async function submitAdminEdit(){
+      const form = document.getElementById('adminEditForm');
+      const body = new URLSearchParams(new FormData(form));
+      const res = await fetch(`/admin/applications/${OWNER_TYPE}/${OWNER_ID}/update`, { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded', 'Accept':'application/json' }, body });
+      const j = await res.json();
+      if (j.ok) { alert('Saved'); location.reload(); } else { alert(j.error||'Failed to save'); }
     }
   </script>
 </div>
