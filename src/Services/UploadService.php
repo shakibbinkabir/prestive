@@ -19,7 +19,7 @@ class UploadService
                 'ext' => ['jpg','jpeg','png'],
                 'max' => 6,
                 'maxBytes' => 5 * 1024 * 1024,
-                'is_image' => true
+                'is_image' => true // kept for backward-compat; detection now uses MIME
             ],
             'biodata_with_photo' => [
                 'ext' => ['pdf','jpg','jpeg','png'],
@@ -74,7 +74,7 @@ class UploadService
                 'ext' => ['jpg','jpeg','png'],
                 'max' => 1,
                 'maxBytes' => 5 * 1024 * 1024,
-                'is_image' => true
+                'is_image' => true // legacy flag
             ],
             'junior_birth_cert' => [
                 'ext' => ['pdf','jpg','jpeg','png'],
@@ -86,7 +86,7 @@ class UploadService
                 'ext' => ['jpg','jpeg','png'],
                 'max' => 1,
                 'maxBytes' => 5 * 1024 * 1024,
-                'is_image' => true
+                'is_image' => true // legacy flag
             ],
             'senior_nid' => [
                 'ext' => ['pdf','jpg','jpeg','png'],
@@ -138,13 +138,15 @@ class UploadService
         if (!in_array($ext, $conf['ext'], true)) {
             throw new \RuntimeException('Invalid file type');
         }
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->file($file['tmp_name']) ?: 'application/octet-stream';
+    $finfo = new \finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']) ?: 'application/octet-stream';
+    $isImage = str_starts_with($mime, 'image/');
 
     [$uuid, $rawDir, $optDir] = self::buildPaths($ownerType, $ownerId);
-        $randomName = $uuid . '.' . $ext;
-        $rawPath = $rawDir . '/' . $randomName;
-    $optPath = $optDir . '/' . pathinfo($randomName, PATHINFO_FILENAME) . ($conf['is_image'] ? '.webp' : '.' . $ext);
+    $randomName = $uuid . '.' . $ext;
+    $rawPath = $rawDir . '/' . $randomName;
+    // Optimize to webp only when actual MIME is image/*
+    $optPath = $optDir . '/' . pathinfo($randomName, PATHINFO_FILENAME) . ($isImage ? '.webp' : '.' . $ext);
 
         if (!move_uploaded_file($file['tmp_name'], $rawPath)) {
             // In non-SAPI tests, move_uploaded_file may fail; fallback to copy
@@ -154,7 +156,7 @@ class UploadService
         }
 
         $optStoredPath = null;
-        if ($conf['is_image']) {
+        if ($isImage) {
             if (\App\Services\ImageService::optimizeToWebp($rawPath, $optPath)) {
                 $optStoredPath = $optPath;
             }

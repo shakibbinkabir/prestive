@@ -205,7 +205,8 @@ function membershipForm() {
             for (const cat in this.uploaded) {
                 this.uploaded[cat] = (this.uploaded[cat] || []).map(f => ({
                     ...f,
-                    optimized_url: f.optimized_url ?? (f.path_optimized ? (`/file/optimized/${f.id}`) : null)
+                    // Show thumbnail for any image by hitting the optimized endpoint; server will fallback to raw if needed
+                    optimized_url: f.optimized_url ?? ((f.mime_type && f.mime_type.startsWith('image/')) ? (`/file/optimized/${f.id}`) : null)
                 }));
             }
 

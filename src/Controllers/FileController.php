@@ -72,20 +72,29 @@ class FileController extends Controller
     public function optimized(string $id): void
     {
         $upload = Upload::find((int)$id);
-        if (!$upload || empty($upload['path_optimized'])) {
+        if (!$upload) {
             Response::setStatus(404);
             echo 'Not found';
             return;
         }
-        $path = __DIR__ . '/../../' . $upload['path_optimized'];
-        if (!file_exists($path)) {
+        $path = null;
+        // Prefer optimized; if missing but original is an image, fall back to raw
+        if (!empty($upload['path_optimized'])) {
+            $cand = __DIR__ . '/../../' . $upload['path_optimized'];
+            if (file_exists($cand)) { $path = $cand; }
+        }
+        if ($path === null && !empty($upload['path_raw']) && str_starts_with((string)$upload['mime_type'], 'image/')) {
+            $cand = __DIR__ . '/../../' . $upload['path_raw'];
+            if (file_exists($cand)) { $path = $cand; }
+        }
+        if ($path === null) {
             Response::setStatus(404);
             echo 'Not found';
             return;
         }
-    $finfo = new \finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->file($path) ?: 'application/octet-stream';
-    Response::setHeader('Content-Type', $mime);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($path) ?: 'application/octet-stream';
+        Response::setHeader('Content-Type', $mime);
         Response::setHeader('Cache-Control', 'public, max-age=31536000, immutable');
         readfile($path);
     }

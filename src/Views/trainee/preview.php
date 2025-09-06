@@ -82,7 +82,7 @@ use App\Core\Auth;
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                         <?php foreach ($items as $u): ?>
                             <div class="bg-gray-800 p-2 rounded text-xs">
-                                <?php if ($u['path_optimized'] && str_starts_with($u['mime_type'], 'image/')): ?>
+                                <?php if (str_starts_with($u['mime_type'] ?? '', 'image/')): ?>
                                     <img src="<?= '/file/optimized/' . $u['id'] ?>" class="w-full h-24 object-cover rounded mb-1"/>
                                 <?php endif; ?>
                                 <a class="underline" href="<?= '/file/raw/' . (int)$u['id'] ?>" target="_blank" rel="noopener">View</a>
