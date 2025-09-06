@@ -24,9 +24,10 @@ class PdfController extends Controller
         unset($app['payments']);
         unset($app['draft_data']);
         $uploads = $app['uploads'] ?? [];
-        $pdf = (new PdfService())->renderApplication($type, $app, $uploads);
+    $template = isset($_GET['template']) ? (string)$_GET['template'] : 'default';
+    $pdf = (new PdfService())->renderApplication($type, $app, $uploads, $template);
         $slug = $app['admission_id'] ?? ($app['status'] ?? 'shared');
-        $filename = $type . '-' . $app['id'] . '-' . $slug . '.pdf';
+    $filename = $type . '-' . $app['id'] . '-' . $slug . ($template && $template!=='default' ? ('-' . preg_replace('/[^a-z0-9_\-]/i','', $template)) : '') . '.pdf';
         (new PdfService())->streamDownload($filename, $pdf);
     }
 }

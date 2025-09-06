@@ -31,7 +31,19 @@
         <button class="bg-yellow-600 text-black px-3 py-1 rounded" onclick="openAd2()">Ad-2 Confirm</button>
       <?php endif; ?>
   <button class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" onclick="copyShareLink()">Copy Share Link</button>
-  <a class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf">Download PDF</a>
+  <div class="relative group">
+    <a class="bg-gray-800 border border-gray-700 px-3 py-1 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf">Download PDF</a>
+    <div class="absolute right-0 mt-1 hidden group-hover:block z-10">
+      <div class="bg-gray-900 border border-gray-700 rounded shadow p-2 w-48">
+        <div class="text-xs text-gray-400 mb-1">Templates</div>
+        <a class="block px-2 py-1 hover:bg-gray-800 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf?template=default">Prestive (default)</a>
+        <a class="block px-2 py-1 hover:bg-gray-800 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf?template=argc">ARGC</a>
+        <?php if ($type==='trainee'): ?>
+          <a class="block px-2 py-1 hover:bg-gray-800 rounded" target="_blank" href="/admin/applications/<?= $type ?>/<?= (int)$app['id'] ?>/pdf?template=trainee">Trainee</a>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
     </div>
   </div>
 
