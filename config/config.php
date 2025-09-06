@@ -48,6 +48,8 @@ define('CSP_ENABLED', filter_var($_ENV['CSP_ENABLED'] ?? (APP_ENV === 'productio
 define('CSP_IMG_ALLOW_DATA', filter_var($_ENV['CSP_IMG_ALLOW_DATA'] ?? 'true', FILTER_VALIDATE_BOOLEAN));
 define('HSTS_MAX_AGE', (int)($_ENV['HSTS_MAX_AGE'] ?? '31536000'));
 define('BACKUP_DIR', $_ENV['BACKUP_DIR'] ?? 'storage/backups');
+// PDF templates directory override (optional). If empty, defaults to project_root/PDF
+define('PDF_TEMPLATES_DIR', $_ENV['PDF_TEMPLATES_DIR'] ?? '');
 
 // Ensure backup directory exists
 if (!is_dir(__DIR__ . '/../' . BACKUP_DIR)) {

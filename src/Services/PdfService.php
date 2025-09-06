@@ -91,7 +91,18 @@ class PdfService
     private function loadStaticTemplate(string $template, string $type, array $app): array
     {
         $root = realpath(__DIR__ . '/../../');
-        $pdfRoot = $root ? ($root . DIRECTORY_SEPARATOR . 'PDF') : null;
+        $envDir = defined('PDF_TEMPLATES_DIR') ? (string)PDF_TEMPLATES_DIR : '';
+        $pdfRoot = null;
+        if ($envDir) {
+            $pdfRoot = realpath($envDir) ?: $envDir; // allow absolute or relative
+            if ($root && !preg_match('/^([A-Za-z]:\\\\|\\/|\w+:)/', $envDir)) {
+                // relative: resolve against project root
+                $candidate = $root . DIRECTORY_SEPARATOR . $envDir;
+                $pdfRoot = realpath($candidate) ?: $candidate;
+            }
+        } else {
+            $pdfRoot = $root ? ($root . DIRECTORY_SEPARATOR . 'PDF') : null;
+        }
         if (!$pdfRoot || !is_dir($pdfRoot)) {
             throw new \RuntimeException('PDF templates directory not found');
         }

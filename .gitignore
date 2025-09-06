@@ -13,4 +13,6 @@
 # Node (if any)
 /node_modules/
 
-/PDF/
+# PDF templates (must be committed for server-side rendering)
+# If you need to exclude large binaries in assets, consider Git LFS
+#/PDF/
